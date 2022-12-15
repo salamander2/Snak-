@@ -1,0 +1,7 @@
+Changes
+=========
+
+Remove public from everywhere.
+
+Pair just two ints. So you could use Point class.
+I've now refactored it to use Point.

@@ -1,6 +1,8 @@
 package snak_plus_plus;
 
-public class Pair {
+//MH. You really really really need a comment here to say what this is for
+//It looks like it's just two ints. So you could use Point class.
+/*public class Pair {
     private final int first;
     private final int second;
 
@@ -17,3 +19,4 @@ public class Pair {
         return second;
     }
 }
+*/

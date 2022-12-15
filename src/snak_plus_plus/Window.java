@@ -1,37 +1,34 @@
 package snak_plus_plus;
 
+//MH remove unused imports
 import java.awt.Color;
-import hsa2.ConsoleCanvas;
-import hsa2.GraphicsConsole;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.geom.CubicCurve2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Random;
-import java.util.Scanner;
-import java.util.stream.IntStream;
-import javax.crypto.spec.GCMParameterSpec;
+
 import javax.imageio.ImageIO;
-import javax.sound.sampled.Line;
 import javax.swing.JOptionPane;
+
+import hsa2.GraphicsConsole;
 
 
 
 class Window {
 	
-	int HS = 30; //Number of Horizontal Squares (X)
-	int VS = 30; //Number of Vertical Squares   (Y)
+	//These constants should be static (and maybe final) so that you can access them easily from elsewhere.
+	//The don't change with each Window object.
+	static int HS = 30; //Number of Horizontal Squares (X)
+	static int VS = 30; //Number of Vertical Squares   (Y)
 	
-	int WIDTH = HS*25;
-	int HEIGHT = VS*25;
-	int REAL_HEIGHT = HEIGHT+30; //the height of the full window, this takes into account the size of the bar with the X that closes the window
+	static int WIDTH = HS*25;
+	static int HEIGHT = VS*25;
+	static int REAL_HEIGHT = HEIGHT+30; //the height of the full window, this takes into account the size of the bar with the X that closes the window
 	
 	boolean switch_crlts = false;
 	BufferedImage snake_win =  loadImage("Snake_eat_apple.png");
@@ -42,9 +39,9 @@ class Window {
 	
 	int breath_step = 10;
 	int step = 1;
-	Color color11 = new Color(67, 154, 134);
+	Color color11 = new Color(67, 154, 134); //MH. Poor name for a colour
 	GraphicsConsole gc = new GraphicsConsole(WIDTH, HEIGHT);
-	boolean ran_setup = false;
+	//boolean ran_setup = false; MH  this is NEVER USED.
 	
 	Font end_font = new Font("Roboto Slab", Font.PLAIN, (int) (HS*1.4));
 	Font big_end_font = new Font("Roboto Slab", Font.BOLD, (int) (HS*1.8));
@@ -59,7 +56,7 @@ class Window {
 		gc.setColor(new Color(20, 20, 20));		
 		for(int i=0; i <HS; i++) {
 			for(int j=0; j <VS; j++) {
-				gc.drawRect(square_to_coords(i, j).getFirst(), square_to_coords(i, j).getSecond(),(int) (WIDTH/HS), (int) (HEIGHT/VS));
+				gc.drawRect(square_to_coords(i, j).x, square_to_coords(i, j).y,(int) (WIDTH/HS), (int) (HEIGHT/VS));
 				
 			}
 		}
@@ -167,16 +164,16 @@ class Window {
 	}
 	
 	
-	private Pair square_to_coords(int sqX, int sqY) { //Converts the square to coordinates on screen
+	private Point square_to_coords(int sqX, int sqY) { //Converts the square to coordinates on screen
 		int x, y;
 		x = (WIDTH/HS)*sqX;
 		y = (HEIGHT/VS)*sqY;
 		
-		return new Pair(x, y);
+		return new Point(x, y);
 		
 	}
 	
-	public Pair get_key(GraphicsConsole gc) {
+	Point get_key(GraphicsConsole gc) {
 		int num1 = 0, num2 = 0; //these are the keys that are being pressed num1 is the snake (player 1) the num2 is the apple (player 2)
   		
 		
@@ -249,7 +246,7 @@ class Window {
 		}
 		if(gc.isKeyDown(27)) System.exit(0);
 		
-		Pair pressed = new Pair(num1, num2);
+		Point pressed = new Point(num1, num2);
 		
 		
 		return pressed;
@@ -333,7 +330,7 @@ class Window {
 		gc.setTitle("Snak ++");
 		gc.setLocationRelativeTo(null);
 		gc.setVisible(true);
-		gc.setLocation(0, 0);
+		gc.setLocation(0, 0); //MH. This overrides setLocationRelativeTo null
 		gc.enableMouse();
 		gc.enableMouseMotion();
 		gc.setResizable(false);
@@ -341,7 +338,7 @@ class Window {
 		gc.setBackgroundColor(Color.BLACK);
 		gc.clear();
 		gc.setColor(new Color(80, 80, 80));
-		ran_setup = true;
+		//ran_setup = true;
 	}
 	
 	

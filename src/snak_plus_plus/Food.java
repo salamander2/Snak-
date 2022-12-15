@@ -1,12 +1,7 @@
 package snak_plus_plus;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
-
 import hsa2.GraphicsConsole;
 
 public class Food {
@@ -22,8 +17,8 @@ public class Food {
 	
 	public void draw(GraphicsConsole gc, int WIDTH, int HEIGHT, int HS, int VS) {
 		if (!alive) return;
-		Pair apple_coords = Apple.square_to_coords(sx, sy, WIDTH, HEIGHT, HS, VS);
-		gc.drawImage(food_img, apple_coords.getFirst(), apple_coords.getSecond(),(int) (WIDTH/HS),(int) (HEIGHT/VS));
+		Point apple_coords = MainGame.square_to_coords(sx, sy, WIDTH, HEIGHT, HS, VS);
+		gc.drawImage(food_img, apple_coords.x, apple_coords.y,(int) (WIDTH/HS),(int) (HEIGHT/VS));
 	}
 	
 	

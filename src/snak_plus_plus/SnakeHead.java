@@ -1,6 +1,7 @@
 package snak_plus_plus;
 
 import java.awt.Color;
+import java.awt.Point;
 //import java.lang.invoke.ConstantBootstraps;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
@@ -102,13 +103,13 @@ public class SnakeHead{
 	}
 	
 	public void draw(GraphicsConsole gc, int WIDTH, int HEIGHT, int HS, int VS) {
-		Pair head_coords = square_to_coords(sx, sy, WIDTH, HEIGHT, HS, VS);
+		Point head_coords = MainGame.square_to_coords(sx, sy, WIDTH, HEIGHT, HS, VS);
 		gc.setColor(new Color(67, 154, 134));
-		gc.drawImage(this.head_img, head_coords.getFirst(), head_coords.getSecond(),(int) (WIDTH/HS),(int) (HEIGHT/VS));
+		gc.drawImage(this.head_img, head_coords.x, head_coords.y,(int) (WIDTH/HS),(int) (HEIGHT/VS));
 		gc.setStroke(4);
 		for(int part = 0; part < num_parts; part ++) {
-			Pair body_coords = square_to_coords(body.get(part).sx, body.get(part).sy, WIDTH, HEIGHT, HS, VS);
-			gc.fillRect(body_coords.getFirst(), body_coords.getSecond(),(int) (WIDTH/HS),(int) (HEIGHT/VS));
+			Point body_coords = MainGame.square_to_coords(body.get(part).sx, body.get(part).sy, WIDTH, HEIGHT, HS, VS);
+			gc.fillRect(body_coords.x, body_coords.y,(int) (WIDTH/HS),(int) (HEIGHT/VS));
 		}
 	}
 	
@@ -144,13 +145,13 @@ public class SnakeHead{
 			bboard = block_cases(bboard, sx, sy-1);
 			bboard[sy][sx] = 4; // Changing the head location to a body part
 			bboard[sy-1][sx] = 3; // Updating the new head location on the bboard
-			Pair old_coords = new Pair (this.sx, this.sy);
+			Point old_coords = new Point (this.sx, this.sy);
 			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = 0; 
 			this.old_sy = this.sy;
 			this.sy -= 1;
 			
-			body.get(part_to_move).sx = old_coords.getFirst();
-			body.get(part_to_move).sy = old_coords.getSecond();
+			body.get(part_to_move).sx = old_coords.x;
+			body.get(part_to_move).sy = old_coords.y;
 			this.last_dir = "up";
 		}
 		if(this.down) {
@@ -162,14 +163,14 @@ public class SnakeHead{
 			bboard = block_cases(bboard, sx, sy+1);
 			bboard[sy][sx] = 4; // Changing the head location to a body part
 			bboard[sy+1][sx] = 3;
-			Pair old_coords = new Pair (this.sx, this.sy);
+			Point old_coords = new Point (this.sx, this.sy);
 			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = 0;
 			this.old_sy = this.sy;
 			this.sy += 1;
 
 			
-			body.get(part_to_move).sx = old_coords.getFirst();
-			body.get(part_to_move).sy = old_coords.getSecond();
+			body.get(part_to_move).sx = old_coords.x;
+			body.get(part_to_move).sy = old_coords.y;
 			this.last_dir = "down";
 		}
 		if(this.left) {
@@ -181,12 +182,12 @@ public class SnakeHead{
 			bboard = block_cases(bboard, sx-1, sy);
 			bboard[sy][sx] = 4; // Changing the head location to a body part
 			bboard[sy][sx-1] = 3;
-			Pair old_coords = new Pair (this.sx, this.sy);
+			Point old_coords = new Point (this.sx, this.sy);
 			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = 0;
 			this.old_sx = this.sx;
 			this.sx -= 1;
-			body.get(part_to_move).sx = old_coords.getFirst();
-			body.get(part_to_move).sy = old_coords.getSecond();
+			body.get(part_to_move).sx = old_coords.x;
+			body.get(part_to_move).sy = old_coords.y;
 			this.last_dir = "left";
 		}
 		if(this.right) {
@@ -198,13 +199,13 @@ public class SnakeHead{
 			bboard = block_cases(bboard, sx+1, sy);
 			bboard[sy][sx] = 4; // Changing the head location to a body part
 			bboard[sy][sx+1] = 3;
-			Pair old_coords = new Pair (this.sx, this.sy);
+			Point old_coords = new Point (this.sx, this.sy);
 			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = 0;
 			this.old_sx = this.sx;
 			this.sx += 1;
 
-			body.get(part_to_move).sx = old_coords.getFirst();
-			body.get(part_to_move).sy = old_coords.getSecond();
+			body.get(part_to_move).sx = old_coords.x;
+			body.get(part_to_move).sy = old_coords.y;
 			this.last_dir = "right";
 			
 		}
@@ -239,12 +240,5 @@ public class SnakeHead{
 		}
 		return bboard;
 	}
-	
-	private Pair square_to_coords(int sqX, int sqY, int WIDTH, int HEIGHT, int HS, int VS) { //Converts the square to coordinates on screen
-		int x, y;
-		x = (WIDTH/HS)*sqX;
-		y = (HEIGHT/VS)*sqY;
-		
-		return new Pair(x, y);
-	}
+
 }
