@@ -19,27 +19,27 @@ public class MainGame {
 		Apple apple = new Apple(12, 2, 49, w.loadImage("apple.png"));
 
 
-		ArrayList<Block> Blocks = new ArrayList<Block>();
+		ArrayList<Block> blocks = new ArrayList<Block>(); //MH variables must be lowercase
 
 		SnakeHead head = new SnakeHead(28, 25, 37, w.loadImage("Head_left.png"), w.loadImage("Head_right.png"), w.loadImage("Head_up.png"), w.loadImage("Head_down.png"));
-		double Dt; //MH: needs a comment. should be lowercase.
+		double timeDbl; //MH: needs a comment. should be lowercase.
 
 
-		int[][] bboard = new int[w.VS][w.HS]; //back end board this is for logic reasons
+		int[][] bboard = new int[Window.VS][Window.HS]; //back end board this is for logic reasons
 
 
 
 
-		for(int i = 0; i < w.HS; i++) {
-			for(int j = 0; j < w.VS; j++) {
+		for(int i = 0; i < Window.HS; i++) {
+			for(int j = 0; j < Window.VS; j++) {
 				bboard[j][i] = 0;
 			}
 		}
 		bboard = w.randomMaze(bboard);// Loads Map
 
-		for(int i = 0; i < w.HS; i++) {
-			for(int j = 0; j < w.VS; j++) {
-				if (bboard[j][i] == 5) Blocks.add(new Block(i, j, w.loadImage("Block.png")));
+		for(int i = 0; i < Window.HS; i++) {
+			for(int j = 0; j < Window.VS; j++) {
+				if (bboard[j][i] == 5) blocks.add(new Block(i, j, w.loadImage("Block.png")));
 			}
 		}
 
@@ -56,15 +56,15 @@ public class MainGame {
 		long last_food_spawn = time;
 
 		Random rand = new Random();
-		Food food = new Food (rand.nextInt(w.VS), rand.nextInt(w.HS), w.loadImage("banana.png"));
+		Food food = new Food (rand.nextInt(Window.VS), rand.nextInt(Window.HS), w.loadImage("banana.png"));
 		food.alive = false;
 		bboard[food.sy][food.sx] = 2;
 
 
 
 
-		for(int i = 0; i < Blocks.size(); i++) {
-			bboard[Blocks.get(i).sy][Blocks.get(i).sx] = 5;
+		for(int i = 0; i < blocks.size(); i++) {
+			bboard[blocks.get(i).sy][blocks.get(i).sx] = 5;
 		}
 		//loading map
 
@@ -85,7 +85,7 @@ public class MainGame {
 		//int last_tie = (int) System.currentTimeMillis();
 		while(true) { // Main loop starts here
 			time =  System.currentTimeMillis();
-			Dt = (double) ((time - prev_time)/1000.0);
+			timeDbl = (time - prev_time)/1000.0; //MH. Does not need casting.
 			prev_time = time;
 
 			//			System.out.println(Arrays.deepToString(bboard));
@@ -102,16 +102,16 @@ public class MainGame {
 					}
 				}if (!show_end) {
 					w.drawBoard();
-					apple.draw(w.gc, w.WIDTH, w.HEIGHT, w.HS, w.VS);
-					head.draw(w.gc, w.WIDTH, w.HEIGHT, w.HS, w.VS);
+					apple.draw(w.gc, Window.WIDTH, Window.HEIGHT, Window.HS, Window.VS);
+					head.draw(w.gc, Window.WIDTH, Window.HEIGHT, Window.HS, Window.VS);
 					w.gc.setColor(new Color(80, 80, 80));
-					if (food.alive) food.draw(w.gc, w.WIDTH, w.HEIGHT, w.HS, w.VS);
+					if (food.alive) food.draw(w.gc, Window.WIDTH, Window.HEIGHT, Window.HS, Window.VS);
 
-					for(int i = 0; i < Blocks.size(); i++){
-						Blocks.get(i).draw(w.gc, w.WIDTH, w.HEIGHT, w.HS, w.VS);
-						bboard[Blocks.get(i).sy][Blocks.get(i).sx] = 5;
+					for(int i = 0; i < blocks.size(); i++){
+						blocks.get(i).draw(w.gc, Window.WIDTH, Window.HEIGHT, Window.HS, Window.VS);
+						bboard[blocks.get(i).sy][blocks.get(i).sx] = 5;
 						if (show_start) {
-							w.start_scrn_wait = (int) (w.START_SCRN_WAIT*Dt);
+							w.start_scrn_wait = (int) (w.START_SCRN_WAIT*timeDbl);
 							w.drawStartScreen();
 						}
 					}
@@ -168,18 +168,18 @@ public class MainGame {
 			if (end && w.gc.isKeyDown('R')) { // Restarts the game
 				head = new SnakeHead(28, 25, 37, w.loadImage("Head_left.png"), w.loadImage("Head_right.png"), w.loadImage("Head_up.png"), w.loadImage("Head_down.png"));
 				apple = new Apple(12, 2, 49, w.loadImage("apple.png"));
-				bboard = new int[w.VS][w.HS];
-				Blocks = new ArrayList<Block>();
-				for(int i = 0; i < w.HS; i++) {
-					for(int j = 0; j < w.VS; j++) {
+				bboard = new int[Window.VS][Window.HS];
+				blocks = new ArrayList<Block>();
+				for(int i = 0; i < Window.HS; i++) {
+					for(int j = 0; j < Window.VS; j++) {
 						bboard[j][i] = 0;
 					}
 				}
 				bboard = w.randomMaze(bboard);
 
-				for(int i = 0; i < w.HS; i++) {
-					for(int j = 0; j < w.VS; j++) {
-						if (bboard[j][i] == 5) Blocks.add(new Block(i, j, w.loadImage("Block.png")));
+				for(int i = 0; i < Window.HS; i++) {
+					for(int j = 0; j < Window.VS; j++) {
+						if (bboard[j][i] == 5) blocks.add(new Block(i, j, w.loadImage("Block.png")));
 					}
 				}
 				has_food = false;
@@ -187,7 +187,7 @@ public class MainGame {
 				show_end = false;
 				end = false;
 				freeze = false;
-				food = new Food (rand.nextInt(w.VS), rand.nextInt(w.HS), w.loadImage("banana.png"));
+				food = new Food (rand.nextInt(Window.VS), rand.nextInt(Window.HS), w.loadImage("banana.png"));
 				food.alive = false;
 				bboard[food.sy][food.sx] = 2;
 
@@ -221,13 +221,13 @@ public class MainGame {
 
 
 				bboard = head.move(bboard);
-				bboard = apple.move(pressed.y, bboard, w.HS, w.VS);
+				bboard = apple.move(pressed.y, bboard, Window.HS, Window.VS);
 
 				if (!has_food && time - last_food_spawn > 100 && !food.alive) { // spawns in another banana once it is eaten
 
 					while (true) {
-						food.sx = rand.nextInt(w.HS);
-						food.sy = rand.nextInt(w.VS);
+						food.sx = rand.nextInt(Window.HS);
+						food.sy = rand.nextInt(Window.VS);
 						if (bboard[food.sy][food.sx] == 0) break;
 					}
 					food.alive = true;
@@ -238,8 +238,8 @@ public class MainGame {
 
 			}
 			//Controlling The speed at which the players can move
-			apple.move_wait = (int) (apple.MOVE_WAIT*Dt*60);
-			head.move_wait = (int) (head.MOVE_WAIT*Dt*60);
+			apple.move_wait = (int) (apple.MOVE_WAIT*timeDbl*60);
+			head.move_wait = (int) (head.MOVE_WAIT*timeDbl*60);
 
 		}
 
@@ -247,12 +247,7 @@ public class MainGame {
 
 
 	public static Point square_to_coords(int sqX, int sqY, int WIDTH, int HEIGHT, int HS, int VS) { //Converts the square to coordinates on screen
-		int x, y;
-		x = (WIDTH/HS)*sqX;
-		y = (HEIGHT/VS)*sqY;
-
-		return new Point(x, y);
-
+			return new Point((WIDTH/HS)*sqX, (HEIGHT/VS)*sqY);
 	}
 
 
