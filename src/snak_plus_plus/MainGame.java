@@ -185,7 +185,7 @@ public class MainGame {
 			}
 
 			bboard[apple.sy][apple.sx] = APPLE;
-			Point pressed = w.get_key(w.gc);
+			Point pressed = w.get_key();
 			if(!freeze) { // A boolean that is true when the game is over to prevent further player movement
 				switch(pressed.x){
 				case (87)://w
@@ -201,7 +201,6 @@ public class MainGame {
 					head.dir_manager("right");
 				break;
 				}
-
 
 				bboard = head.move(bboard);
 				bboard = apple.move(pressed.y, bboard);

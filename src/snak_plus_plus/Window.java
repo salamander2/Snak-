@@ -54,7 +54,7 @@ class Window {
 	//NOTE: there is no window constructor here. This is intentional.
 	
 	void drawBoard() {
-//		gc.setStroke(1); //MH. This line can go into setup(). It's never changed
+		gc.setStroke(1);
 		gc.setColor(new Color(20, 20, 20));		
 		for(int i=0; i < HS; i++) {
 			for(int j=0; j < VS; j++) {
@@ -166,7 +166,7 @@ class Window {
 	
 
 	
-	Point get_key(GraphicsConsole gc) {
+	Point get_key() {
 		int num1 = 0, num2 = 0; //these are the keys that are being pressed num1 is the snake (player 1) the num2 is the apple (player 2)
   		
 		
@@ -237,12 +237,10 @@ class Window {
 				break;
 			}
 		}
-		if(gc.isKeyDown(27)) System.exit(0);
 		
-		Point pressed = new Point(num1, num2);
-		
-		
-		return pressed;
+		if (gc.isKeyDown(27)) System.exit(0);  //MH. This is not a legal way to end the game. Find a better way.
+	
+		return  new Point(num1, num2);
 	}
 	
 	

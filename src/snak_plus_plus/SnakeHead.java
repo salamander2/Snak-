@@ -10,6 +10,15 @@ import java.awt.image.BufferedImage;
 import hsa2.GraphicsConsole;
 
 public class SnakeHead{
+	
+	//Constants from MainGame
+	static final int EMPTY = 0;
+	static final int APPLE = 1; //player 2
+	static final int FOOD = 2;
+	static final int WALL = 5;
+	static final int SNAKE_HEAD = 3;
+	static final int SNAKE_BODY = 4;
+		
 	int sx, sy;
 	int old_sx, old_sy;
 	int x, y;
@@ -32,9 +41,7 @@ public class SnakeHead{
 	BufferedImage head_down;
 	BufferedImage head_img = head_right;
 	ArrayList<SnakeBody> body = new ArrayList<SnakeBody>();
-	static final int FOOD = 2;
-	
-			
+		
 	SnakeHead(int n1, int n2, int move_wait, BufferedImage img_l, BufferedImage img_r, BufferedImage img_u, BufferedImage img_d) {
 		sx = n1;
 		sy = n2;
@@ -132,10 +139,10 @@ public class SnakeHead{
 			}
 			this.head_img = this.head_up;
 			bboard = block_cases(bboard, sx, sy-1);
-			bboard[sy][sx] = 4; // Changing the head location to a body part
-			bboard[sy-1][sx] = 3; // Updating the new head location on the bboard
+			bboard[sy][sx] = SNAKE_BODY; // Changing the head location to a body part
+			bboard[sy-1][sx] = SNAKE_HEAD; // Updating the new head location on the bboard
 			Point old_coords = new Point (this.sx, this.sy);
-			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = 0; 
+			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = EMPTY; 
 			this.old_sy = this.sy;
 			this.sy -= 1;
 			
@@ -150,10 +157,10 @@ public class SnakeHead{
 			}
 			this.head_img = this.head_down;
 			bboard = block_cases(bboard, sx, sy+1);
-			bboard[sy][sx] = 4; // Changing the head location to a body part
-			bboard[sy+1][sx] = 3;
+			bboard[sy][sx] = SNAKE_BODY; // Changing the head location to a body part
+			bboard[sy+1][sx] = SNAKE_HEAD;
 			Point old_coords = new Point (this.sx, this.sy);
-			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = 0;
+			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = EMPTY;
 			this.old_sy = this.sy;
 			this.sy += 1;
 
@@ -169,10 +176,10 @@ public class SnakeHead{
 			} 
 			this.head_img = this.head_left;
 			bboard = block_cases(bboard, sx-1, sy);
-			bboard[sy][sx] = 4; // Changing the head location to a body part
-			bboard[sy][sx-1] = 3;
+			bboard[sy][sx] = SNAKE_BODY; // Changing the head location to a body part
+			bboard[sy][sx-1] = SNAKE_HEAD;
 			Point old_coords = new Point (this.sx, this.sy);
-			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = 0;
+			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = EMPTY;
 			this.old_sx = this.sx;
 			this.sx -= 1;
 			body.get(part_to_move).sx = old_coords.x;
@@ -186,10 +193,10 @@ public class SnakeHead{
 			} 
 			this.head_img = this.head_right;
 			bboard = block_cases(bboard, sx+1, sy);
-			bboard[sy][sx] = 4; // Changing the head location to a body part
-			bboard[sy][sx+1] = 3;
+			bboard[sy][sx] = SNAKE_BODY; // Changing the head location to a body part
+			bboard[sy][sx+1] = SNAKE_HEAD;
 			Point old_coords = new Point (this.sx, this.sy);
-			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = 0;
+			bboard[body.get(part_to_move).sy][body.get(part_to_move).sx] = EMPTY;
 			this.old_sx = this.sx;
 			this.sx += 1;
 
@@ -209,9 +216,9 @@ public class SnakeHead{
 	int[][] block_cases(int[][] bboard, int sx, int sy) {
 //		System.out.println(">> " + bboard[sy][sx]);
 		switch(bboard[sy][sx]) {
-			case(0):
+			case EMPTY:
 				return bboard;
-			case(1):
+			case APPLE:
 				this.won = true;
 				return bboard;
 			case FOOD:
@@ -220,10 +227,10 @@ public class SnakeHead{
 				this.body.get(num_parts-1).is_new = true;
 				this.ate = true;
 				return bboard;
-			case(4):
+			case SNAKE_BODY:
 				this.bonked = true;
 				return bboard;
-			case(5):
+			case WALL:
 				this.bonked = true;
 				return bboard;
 		}
