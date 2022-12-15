@@ -204,7 +204,7 @@ public class MainGame {
 
 
 				bboard = head.move(bboard);
-				bboard = apple.move(pressed.y, bboard, Window.HS, Window.VS);
+				bboard = apple.move(pressed.y, bboard);
 
 				if (!has_food && time - last_food_spawn > 100 && !food.alive) { // spawns in another banana once it is eaten
 

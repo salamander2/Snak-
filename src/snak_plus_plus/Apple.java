@@ -42,56 +42,46 @@ class Apple {
 		apple_img = img;
 	}
 	
-	
 	void draw(GraphicsConsole gc, int WIDTH, int HEIGHT, int HS, int VS) {
-		Point apple_coords = MainGame.square_to_coords(sx, sy, WIDTH, HEIGHT, HS, VS);
+		Point apple_coords = MainGame.square_to_coords(sx, sy, WIDTH, HEIGHT, Window.HS, Window.VS);
 		gc.drawImage(apple_img, apple_coords.x, apple_coords.y,(int) (WIDTH/HS),(int) (HEIGHT/VS));
 	}
 	void move_to_sqr(int sx, int sy) {
 		 // checks if enough time has passed since last move.  MH ???
 		this.sx = sx;
-		this.sy = sy;
-		
+		this.sy = sy;	
 	}
 	
-	int[][] move(int dir, int[][] bboard, int HS, int VS) {
+	int[][] move(int dir, int[][] bboard) {
 		
 		if (!(System.currentTimeMillis() - last_move >= move_wait)) return bboard;
 		
+		int a=-1, b=-1;
+		
 		switch(dir){
 		case (37)://left arrow
-			if(!MainGame.wbos(this.sx-1, this.sy, HS, VS)) break; //Makes sure that the this won't exit the screen
-			if(bboard[this.sy][this.sx-1] != EMPTY && bboard[this.sy][this.sx-1] != SNAKE_HEAD) break;
-			if(bboard[this.sy][this.sx-1] == SNAKE_HEAD) is_eaten = true;
-			bboard[this.sy][this.sx] = EMPTY;
-			this.move_to_sqr(this.sx-1,this.sy);
-			bboard[this.sy][this.sx] = APPLE;
+			a=sx-1; b=sy;
 			break;
 		case (38)://up arrow
-			if(!MainGame.wbos(this.sx, this.sy-1, HS, VS)) break;
-			if(bboard[this.sy-1][this.sx] != 0 && bboard[this.sy-1][this.sx] != SNAKE_HEAD) break;
-			if(bboard[this.sy-1][this.sx] == SNAKE_HEAD) is_eaten = true;
-			bboard[this.sy][this.sx] = 0;
-			this.move_to_sqr(this.sx, this.sy-1);
-			bboard[this.sy][this.sx] = APPLE;
+			a=sx; b=sy-1;
 			break;
 		case (39)://right arrow
-			if(!MainGame.wbos(this.sx+1, this.sy, HS, VS)) break;
-			if(bboard[this.sy][this.sx+1] != 0 && bboard[this.sy][this.sx+1] != SNAKE_HEAD) break;
-			if(bboard[this.sy][this.sx+1] == SNAKE_HEAD) is_eaten = true;
-			bboard[this.sy][this.sx] = 0;
-			this.move_to_sqr(this.sx+1,this.sy);
-			bboard[this.sy][this.sx] = APPLE;
+			a=sx+1; b=sy;
 			break;
 		case (40)://down arrow
-			if(!MainGame.wbos(this.sx, this.sy+1, HS, VS)) break;
-			if(bboard[this.sy+1][this.sx] != 0 && bboard[this.sy+1][this.sx] != SNAKE_HEAD) break;
-			if(bboard[this.sy+1][this.sx] == SNAKE_HEAD) is_eaten = true;
-			bboard[this.sy][this.sx] = 0;
-			this.move_to_sqr(this.sx,this.sy+1);
-			bboard[this.sy][this.sx] = APPLE;
+			a=sx; b=sy+1;
 			break;
+		}		
+	
+		if(MainGame.wbos(a,b, Window.HS, Window.VS)) {
+			if(bboard[b][a] == EMPTY || bboard[b][a] == SNAKE_HEAD) {
+				if(bboard[b][a] == SNAKE_HEAD) is_eaten = true;
+				bboard[b][a] = EMPTY;
+				this.move_to_sqr(a,b);
+				bboard[this.sy][this.sx] = APPLE;
+			}
 		}
+		
 		last_move =  System.currentTimeMillis();
 		return bboard;
 	}
