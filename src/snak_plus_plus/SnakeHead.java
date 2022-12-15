@@ -5,8 +5,7 @@ import java.awt.Point;
 //import java.lang.invoke.ConstantBootstraps;
 import java.util.ArrayList;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
 
 import hsa2.GraphicsConsole;
 
@@ -54,16 +53,6 @@ public class SnakeHead{
 		head_up = img_u;
 		head_down = img_d;
 	}
-	
-	public boolean wbos(int sx, int sy, int HS, int VS) {
-		if (0<=sx && sx<HS) {
-			if(0<=sy && sy<VS) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	
 	public void dir_manager(String dir) {
 		this.up = false;

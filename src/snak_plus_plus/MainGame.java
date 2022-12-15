@@ -5,31 +5,36 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
-
 import java.io.IOException;
 
 public class MainGame {
 
+	static ArrayList<Block> blocks = new ArrayList<Block>(); //MH variables must be lowercase
+	static double timeDbl; //MH: needs a comment. should be lowercase.
+	static int[][] bboard = new int[Window.VS][Window.HS]; //back end board this is for logic reasons
+	static Random rand = new Random();
+	
+	// bboard is the back-end board that figures out what is where on the screen to figure out collisions
+	static final int EMPTY = 0;
+	static final int APPLE = 1; //player 2
+	static final int FOOD = 2;
+	static final int WALL = 5;
+	static final int SNAKE_HEAD = 3;
+	static final int SNAKE_BODY = 4;
+	
+	//TODO: This needs to be split into methods.
 	public static void main(String[] args) throws IOException {
+		
+		//setup window
 		boolean has_food = false;
 		Window w = new Window();
 		w.setup();
 		w.drawLoadingscreen(); //MH. This is NOT the intro screen. It's an additional screen that does nothing.
 
 		Apple apple = new Apple(12, 2, 49, w.loadImage("apple.png"));
-
-
-		ArrayList<Block> blocks = new ArrayList<Block>(); //MH variables must be lowercase
-
 		SnakeHead head = new SnakeHead(28, 25, 37, w.loadImage("Head_left.png"), w.loadImage("Head_right.png"), w.loadImage("Head_up.png"), w.loadImage("Head_down.png"));
-		double timeDbl; //MH: needs a comment. should be lowercase.
-
-
-		int[][] bboard = new int[Window.VS][Window.HS]; //back end board this is for logic reasons
-
-
-
-
+		
+		//setup board
 		for(int i = 0; i < Window.HS; i++) {
 			for(int j = 0; j < Window.VS; j++) {
 				bboard[j][i] = 0;
@@ -43,47 +48,30 @@ public class MainGame {
 			}
 		}
 
-		boolean show_start = true;
-		boolean show_end = false;
-		boolean end = false;
-		boolean freeze = true;
-		String end_phraseString = "Apple Won the Game!";
-		int sleep_time = 20;
-		long time = System.currentTimeMillis();
-		long prev_time = System.currentTimeMillis();
-		long last_tie = System.currentTimeMillis();
-
-		long last_food_spawn = time;
-
-		Random rand = new Random();
 		Food food = new Food (rand.nextInt(Window.VS), rand.nextInt(Window.HS), w.loadImage("banana.png"));
 		food.alive = false;
 		bboard[food.sy][food.sx] = 2;
-
-
-
+		
 
 		for(int i = 0; i < blocks.size(); i++) {
 			bboard[blocks.get(i).sy][blocks.get(i).sx] = 5;
 		}
-		//loading map
 
 
-
-
-		System.out.println(Arrays.deepToString(bboard));
-		/*
-		 * bboard is the back-end board that figures out what is where on the screen to figure out collisions
-		 * 0 -> Empty Square
-		 * 1 -> Player2 Apple
-		 * 2 -> Food for Snake
-		 * 3 -> Snake Head
-		 * 4 -> Snake body part
-		 * 5 -> Obstacle (wall of some sorts)
-		 */
+		boolean show_start = true;
+		boolean show_end = false;
+		boolean end = false;
+		boolean freeze = true;
+		//String end_phraseString = "Apple Won the Game!";
+		int sleep_time = 20;
+		long time = System.currentTimeMillis();
+		long prev_time = time;
+		long last_tie = time;
+		long last_food_spawn = time;
 
 		//int last_tie = (int) System.currentTimeMillis();
-		while(true) { // Main loop starts here
+		// Main loop
+		while(true) { 
 			time =  System.currentTimeMillis();
 			timeDbl = (time - prev_time)/1000.0; //MH. Does not need casting.
 			prev_time = time;
@@ -100,7 +88,9 @@ public class MainGame {
 						w.drawEndScreen("Snake Won by CHOMP!!!", new Color(67, 154, 134), new Color(33, 31, 34), true);
 						apple.is_eaten = true;
 					}
-				}if (!show_end) {
+				}
+				
+				if (!show_end) {
 					w.drawBoard();
 					apple.draw(w.gc, Window.WIDTH, Window.HEIGHT, Window.HS, Window.VS);
 					head.draw(w.gc, Window.WIDTH, Window.HEIGHT, Window.HS, Window.VS);
@@ -110,6 +100,7 @@ public class MainGame {
 					for(int i = 0; i < blocks.size(); i++){
 						blocks.get(i).draw(w.gc, Window.WIDTH, Window.HEIGHT, Window.HS, Window.VS);
 						bboard[blocks.get(i).sy][blocks.get(i).sx] = 5;
+						//Why is this in a FOR LOOP?!
 						if (show_start) {
 							w.start_scrn_wait = (int) (w.START_SCRN_WAIT*timeDbl);
 							w.drawStartScreen();
@@ -172,14 +163,14 @@ public class MainGame {
 				blocks = new ArrayList<Block>();
 				for(int i = 0; i < Window.HS; i++) {
 					for(int j = 0; j < Window.VS; j++) {
-						bboard[j][i] = 0;
+						bboard[j][i] = EMPTY;
 					}
 				}
 				bboard = w.randomMaze(bboard);
 
 				for(int i = 0; i < Window.HS; i++) {
 					for(int j = 0; j < Window.VS; j++) {
-						if (bboard[j][i] == 5) blocks.add(new Block(i, j, w.loadImage("Block.png")));
+						if (bboard[j][i] == WALL) blocks.add(new Block(i, j, w.loadImage("Block.png")));
 					}
 				}
 				has_food = false;
@@ -189,21 +180,13 @@ public class MainGame {
 				freeze = false;
 				food = new Food (rand.nextInt(Window.VS), rand.nextInt(Window.HS), w.loadImage("banana.png"));
 				food.alive = false;
-				bboard[food.sy][food.sx] = 2;
+				bboard[food.sy][food.sx] = FOOD;
 
 			}
 
-
-
-
-			bboard[apple.sy][apple.sx] = 1;
+			bboard[apple.sy][apple.sx] = APPLE;
 			Point pressed = w.get_key(w.gc);
 			if(!freeze) { // A boolean that is true when the game is over to prevent further player movement
-
-
-
-
-
 				switch(pressed.x){
 				case (87)://w
 					head.dir_manager("up");
@@ -228,10 +211,10 @@ public class MainGame {
 					while (true) {
 						food.sx = rand.nextInt(Window.HS);
 						food.sy = rand.nextInt(Window.VS);
-						if (bboard[food.sy][food.sx] == 0) break;
+						if (bboard[food.sy][food.sx] == EMPTY) break;
 					}
 					food.alive = true;
-					bboard[food.sy][food.sx] = 2;
+					bboard[food.sy][food.sx] = FOOD;
 					last_food_spawn = time;
 
 				}
@@ -248,6 +231,29 @@ public class MainGame {
 
 	public static Point square_to_coords(int sqX, int sqY, int WIDTH, int HEIGHT, int HS, int VS) { //Converts the square to coordinates on screen
 			return new Point((WIDTH/HS)*sqX, (HEIGHT/VS)*sqY);
+	}
+	
+	/*public static Point square_to_coords(int sqX, int sqY) { //Converts the square to coordinates on screen
+		int x, y;
+		x = (Window.WIDTH/Window.HS)*sqX;
+		y = (Window.HEIGHT/Window.VS)*sqY;
+		
+		return new Point(x, y);	
+	}*/
+	
+	public static Point square_to_coords(int sqX, int sqY) {
+		return square_to_coords(sqX, sqY, Window.WIDTH, Window.HEIGHT, Window.HS, Window.VS);	
+	}
+	
+//  will be on screen. This is used for Apple and maybe SnakeHead
+//              \/   
+	public static boolean wbos(int sx, int sy, int HS, int VS) {
+		if (0<=sx && sx<HS) {
+			if(0<=sy && sy<VS) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 

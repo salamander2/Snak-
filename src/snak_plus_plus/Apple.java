@@ -15,8 +15,15 @@ import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
 
-
 class Apple {
+
+	//Constants from MainGame
+	static final int EMPTY = 0;
+	static final int APPLE = 1; //player 2
+	static final int FOOD = 2;
+	static final int WALL = 5;
+	static final int SNAKE_HEAD = 3;
+	static final int SNAKE_BODY = 4;
 	
 	BufferedImage apple_img;	
 	boolean is_eaten = false;
@@ -36,62 +43,53 @@ class Apple {
 	}
 	
 	
-	//          will be on screen
-	//              \/   
-	boolean wbos(int sx, int sy, int HS, int VS) {
-		if (0<=sx && sx<HS) {
-			if(0<=sy && sy<VS) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	void draw(GraphicsConsole gc, int WIDTH, int HEIGHT, int HS, int VS) {
 		Point apple_coords = MainGame.square_to_coords(sx, sy, WIDTH, HEIGHT, HS, VS);
 		gc.drawImage(apple_img, apple_coords.x, apple_coords.y,(int) (WIDTH/HS),(int) (HEIGHT/VS));
 	}
 	void move_to_sqr(int sx, int sy) {
-		 // checks if enough time has passed since last move
+		 // checks if enough time has passed since last move.  MH ???
 		this.sx = sx;
 		this.sy = sy;
 		
 	}
 	
-	public int[][] move(int dir, int[][] bboard, int HS, int VS) {
+	int[][] move(int dir, int[][] bboard, int HS, int VS) {
+		
 		if (!(System.currentTimeMillis() - last_move >= move_wait)) return bboard;
+		
 		switch(dir){
 		case (37)://left arrow
-			if(!this.wbos(this.sx-1, this.sy, HS, VS)) break; //Makes sure that the this won't exit the screen
-			if(bboard[this.sy][this.sx-1] != 0 && bboard[this.sy][this.sx-1] != 3) break;
-			if(bboard[this.sy][this.sx-1] == 3) is_eaten = true;
-			bboard[this.sy][this.sx] = 0;
+			if(!MainGame.wbos(this.sx-1, this.sy, HS, VS)) break; //Makes sure that the this won't exit the screen
+			if(bboard[this.sy][this.sx-1] != EMPTY && bboard[this.sy][this.sx-1] != SNAKE_HEAD) break;
+			if(bboard[this.sy][this.sx-1] == SNAKE_HEAD) is_eaten = true;
+			bboard[this.sy][this.sx] = EMPTY;
 			this.move_to_sqr(this.sx-1,this.sy);
-			bboard[this.sy][this.sx] = 1;
+			bboard[this.sy][this.sx] = APPLE;
 			break;
 		case (38)://up arrow
-			if(!this.wbos(this.sx, this.sy-1, HS, VS)) break;
-			if(bboard[this.sy-1][this.sx] != 0 && bboard[this.sy-1][this.sx] != 3) break;
-			if(bboard[this.sy-1][this.sx] == 3) is_eaten = true;
+			if(!MainGame.wbos(this.sx, this.sy-1, HS, VS)) break;
+			if(bboard[this.sy-1][this.sx] != 0 && bboard[this.sy-1][this.sx] != SNAKE_HEAD) break;
+			if(bboard[this.sy-1][this.sx] == SNAKE_HEAD) is_eaten = true;
 			bboard[this.sy][this.sx] = 0;
 			this.move_to_sqr(this.sx, this.sy-1);
-			bboard[this.sy][this.sx] = 1;
+			bboard[this.sy][this.sx] = APPLE;
 			break;
 		case (39)://right arrow
-			if(!this.wbos(this.sx+1, this.sy, HS, VS)) break;
-			if(bboard[this.sy][this.sx+1] != 0 && bboard[this.sy][this.sx+1] != 3) break;
-			if(bboard[this.sy][this.sx+1] == 3) is_eaten = true;
+			if(!MainGame.wbos(this.sx+1, this.sy, HS, VS)) break;
+			if(bboard[this.sy][this.sx+1] != 0 && bboard[this.sy][this.sx+1] != SNAKE_HEAD) break;
+			if(bboard[this.sy][this.sx+1] == SNAKE_HEAD) is_eaten = true;
 			bboard[this.sy][this.sx] = 0;
 			this.move_to_sqr(this.sx+1,this.sy);
-			bboard[this.sy][this.sx] = 1;
+			bboard[this.sy][this.sx] = APPLE;
 			break;
 		case (40)://down arrow
-			if(!this.wbos(this.sx, this.sy+1, HS, VS)) break;
-			if(bboard[this.sy+1][this.sx] != 0 && bboard[this.sy+1][this.sx] != 3) break;
-			if(bboard[this.sy+1][this.sx] == 3) is_eaten = true;
+			if(!MainGame.wbos(this.sx, this.sy+1, HS, VS)) break;
+			if(bboard[this.sy+1][this.sx] != 0 && bboard[this.sy+1][this.sx] != SNAKE_HEAD) break;
+			if(bboard[this.sy+1][this.sx] == SNAKE_HEAD) is_eaten = true;
 			bboard[this.sy][this.sx] = 0;
 			this.move_to_sqr(this.sx,this.sy+1);
-			bboard[this.sy][this.sx] = 1;
+			bboard[this.sy][this.sx] = APPLE;
 			break;
 		}
 		last_move =  System.currentTimeMillis();

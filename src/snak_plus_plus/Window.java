@@ -51,13 +51,14 @@ class Window {
 	int last_strt_scrn = time;
 	final int START_SCRN_WAIT = start_scrn_wait;
 	
+	//NOTE: there is no window constructor here. This is intentional.
+	
 	void drawBoard() {
-		gc.setStroke(1);
+//		gc.setStroke(1); //MH. This line can go into setup(). It's never changed
 		gc.setColor(new Color(20, 20, 20));		
-		for(int i=0; i <HS; i++) {
-			for(int j=0; j <VS; j++) {
-				gc.drawRect(square_to_coords(i, j).x, square_to_coords(i, j).y,(int) (WIDTH/HS), (int) (HEIGHT/VS));
-				
+		for(int i=0; i < HS; i++) {
+			for(int j=0; j < VS; j++) {
+				gc.drawRect(MainGame.square_to_coords(i, j).x, MainGame.square_to_coords(i, j).y,(int) (WIDTH/HS), (int) (HEIGHT/VS));			
 			}
 		}
 	}
@@ -67,8 +68,7 @@ class Window {
 		gc.fillRect(0, 0, WIDTH, HEIGHT);
 		gc.setColor(new Color(67, 154, 134));
 		gc.setFont(big_end_font);
-		gc.drawString("Loading...",(int) (HS*7.8), 300);
-		
+		gc.drawString("Loading...",(int) (HS*7.8), 300);	
 	}
 	
 	void drawEndScreen(String phrase, Color color, Color bg_color, boolean snake_won) {
@@ -96,19 +96,19 @@ class Window {
 		gc.setColor(color1);
 		gc.drawString("Hold SPACE to review the board, ESC to exit, or R to restart.",(int) (HS*(HS/11)), 490);
 		if (snake_won) gc.drawImage(snake_win, (int) (230), 350);
-		else gc.drawImage(apple_win, (int) (200), 300);
-		
-	}
+		else gc.drawImage(apple_win, (int) (200), 300);	
+	} //MH. problems with spacing of }
+	
+	//FIXME: MH. Make a whole new GraphicsConsole for the intro screen. 
+	//		 It doesn't make sense to overwrite the standard gc.
 	void drawStartScreen() {
 		gc.setColor(new Color(30, 30, 30));
 		time = (int) System.currentTimeMillis();
-		gc.fillRect(0, 0, WIDTH, HEIGHT); 
-
-		
-		
+		gc.fillRect(0, 0, WIDTH, HEIGHT); 		
 		
 		Color color2 = new Color(67, 154, 134);
 		
+		//Need a comment for this
 		if (time-last_strt_scrn > 20) {
 			if(breath_step > 68) step *= -1;
 			else if (breath_step < 10) step *= -1;
@@ -127,10 +127,11 @@ class Window {
 		gc.drawString("Press SPACE to start",(int) (HS*3.7), 240);
 		gc.setFont(small_end_font);
 		gc.setColor(color2);
+		
 		if (switch_crlts) gc.drawString("Controls are Arrow Keys for the Snak and WASD for the Apple",(int) (HS*(HS/11)), 490);
 		else gc.drawString("Controls are WASD for the Snak and Arrow Keys for the Apple",(int) (HS*(HS/11)), 490);
-		
 	}
+	
 	public Color brighter(Color color1, double FACTOR) {
         int r = color1.getRed();
         int g = color1.getGreen();
@@ -163,15 +164,7 @@ class Window {
                          color1.getAlpha());
 	}
 	
-	
-	private Point square_to_coords(int sqX, int sqY) { //Converts the square to coordinates on screen
-		int x, y;
-		x = (WIDTH/HS)*sqX;
-		y = (HEIGHT/VS)*sqY;
-		
-		return new Point(x, y);
-		
-	}
+
 	
 	Point get_key(GraphicsConsole gc) {
 		int num1 = 0, num2 = 0; //these are the keys that are being pressed num1 is the snake (player 1) the num2 is the apple (player 2)
@@ -321,10 +314,7 @@ class Window {
         maps.close();
         return bboard;
     }
-	
-	
-	
-	
+
 	
 	public void setup() { //Creates window container
 		gc.setTitle("Snak ++");
@@ -338,6 +328,7 @@ class Window {
 		gc.setBackgroundColor(Color.BLACK);
 		gc.clear();
 		gc.setColor(new Color(80, 80, 80));
+		gc.setStroke(1);
 		//ran_setup = true;
 	}
 	
