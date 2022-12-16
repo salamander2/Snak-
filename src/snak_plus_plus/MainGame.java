@@ -2,10 +2,18 @@ package snak_plus_plus;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class MainGame {
 
@@ -13,6 +21,10 @@ public class MainGame {
 	static double timeDbl; //MH: needs a comment. should be lowercase.
 	static int[][] bboard = new int[Window.VS][Window.HS]; //back end board this is for logic reasons
 	static Random rand = new Random();
+	
+	static Apple apple;
+	static SnakeHead head;
+	static Food food;
 	
 	// bboard is the back-end board that figures out what is where on the screen to figure out collisions
 	static final int EMPTY = 0;
@@ -22,41 +34,16 @@ public class MainGame {
 	static final int SNAKE_HEAD = 3;
 	static final int SNAKE_BODY = 4;
 	
-	//TODO: This needs to be split into methods.
-	public static void main(String[] args) throws IOException {
+	
+	public static void main(String[] args) {
 		
-		//setup window
+		//set up window
 		boolean has_food = false;
 		Window w = new Window();
 		w.setup();
 		w.drawLoadingscreen(); //MH. This is NOT the intro screen. It's an additional screen that does nothing.
 
-		Apple apple = new Apple(12, 2, 49, w.loadImage("apple.png"));
-		SnakeHead head = new SnakeHead(28, 25, 37, w.loadImage("Head_left.png"), w.loadImage("Head_right.png"), w.loadImage("Head_up.png"), w.loadImage("Head_down.png"));
-		
-		//setup board
-		for(int i = 0; i < Window.HS; i++) {
-			for(int j = 0; j < Window.VS; j++) {
-				bboard[j][i] = 0;
-			}
-		}
-		bboard = w.randomMaze(bboard);// Loads Map
-
-		for(int i = 0; i < Window.HS; i++) {
-			for(int j = 0; j < Window.VS; j++) {
-				if (bboard[j][i] == 5) blocks.add(new Block(i, j, w.loadImage("Block.png")));
-			}
-		}
-
-		Food food = new Food (rand.nextInt(Window.VS), rand.nextInt(Window.HS), w.loadImage("banana.png"));
-		food.alive = false;
-		bboard[food.sy][food.sx] = 2;
-		
-
-		for(int i = 0; i < blocks.size(); i++) {
-			bboard[blocks.get(i).sy][blocks.get(i).sx] = 5;
-		}
-
+		setupGameObjects();
 
 		boolean show_start = true;
 		boolean show_end = false;
@@ -157,8 +144,8 @@ public class MainGame {
 
 
 			if (end && w.gc.isKeyDown('R')) { // Restarts the game
-				head = new SnakeHead(28, 25, 37, w.loadImage("Head_left.png"), w.loadImage("Head_right.png"), w.loadImage("Head_up.png"), w.loadImage("Head_down.png"));
-				apple = new Apple(12, 2, 49, w.loadImage("apple.png"));
+				head = new SnakeHead(28, 25, 37, loadImage("Head_left.png"), loadImage("Head_right.png"), loadImage("Head_up.png"), loadImage("Head_down.png"));
+				apple = new Apple(12, 2, 49, loadImage("apple.png"));
 				bboard = new int[Window.VS][Window.HS];
 				blocks = new ArrayList<Block>();
 				for(int i = 0; i < Window.HS; i++) {
@@ -166,11 +153,11 @@ public class MainGame {
 						bboard[j][i] = EMPTY;
 					}
 				}
-				bboard = w.randomMaze(bboard);
+				bboard = randomMaze(bboard);
 
 				for(int i = 0; i < Window.HS; i++) {
 					for(int j = 0; j < Window.VS; j++) {
-						if (bboard[j][i] == WALL) blocks.add(new Block(i, j, w.loadImage("Block.png")));
+						if (bboard[j][i] == WALL) blocks.add(new Block(i, j, loadImage("Block.png")));
 					}
 				}
 				has_food = false;
@@ -178,7 +165,7 @@ public class MainGame {
 				show_end = false;
 				end = false;
 				freeze = false;
-				food = new Food (rand.nextInt(Window.VS), rand.nextInt(Window.HS), w.loadImage("banana.png"));
+				food = new Food (rand.nextInt(Window.VS), rand.nextInt(Window.HS), loadImage("banana.png"));
 				food.alive = false;
 				bboard[food.sy][food.sx] = FOOD;
 
@@ -227,6 +214,82 @@ public class MainGame {
 
 	}
 
+	static void setupGameObjects() {
+
+		//set up board
+		for(int i = 0; i < Window.HS; i++) {
+			for(int j = 0; j < Window.VS; j++) {
+				bboard[j][i] = 0;
+			}
+		}
+		bboard = randomMaze(bboard);// Loads Map
+
+		//This is putting the blocks from the board into the arrayList
+		for(int i = 0; i < Window.HS; i++) {
+			for(int j = 0; j < Window.VS; j++) {
+				if (bboard[j][i] == WALL) blocks.add(new Block(i, j, loadImage("Block.png")));
+			}
+		}
+		//MH. This is copying the data from the blocks arraylist to the board.
+		//But this is just done in reverse above!
+		/*
+		for(int i = 0; i < blocks.size(); i++) {
+			bboard[blocks.get(i).sy][blocks.get(i).sx] = WALL;
+		}
+		*/
+
+		//set up objects
+		apple = new Apple(12, 2, 49, loadImage("apple.png"));
+		head = new SnakeHead(28, 25, 37, loadImage("Head_left.png"), loadImage("Head_right.png"), loadImage("Head_up.png"), loadImage("Head_down.png"));
+		food = new Food (rand.nextInt(Window.VS), rand.nextInt(Window.HS), loadImage("banana.png"));
+		
+		food.alive = false;
+		bboard[food.sy][food.sx] = FOOD;
+		
+		
+	}
+	
+	static int[][] randomMaze(int[][] bboard) {
+		String filename = "maps.txt";
+		InputStream inputStr = MainGame.class.getClassLoader().getResourceAsStream(filename);
+		BufferedReader br = new BufferedReader(new InputStreamReader(inputStr)); 
+        
+        ArrayList<String> allMaps = new ArrayList<String>();
+       
+        try {
+	        while (true) {
+	        	String s = br.readLine();
+	        	if (s == null) break;
+	        	allMaps.add(s);
+	        }
+	        br.close();
+        } catch (IOException e) {
+        	System.out.println("ERROR: fatal IO exception");
+        	System.out.println("Make sure that " + filename + " exists");
+        	e.printStackTrace();
+        	System.exit(0);
+        }
+        
+        int number, randomNumber = rand.nextInt(allMaps.size());
+        String line = allMaps.get(randomNumber);
+        
+        //parse the random map chosen.
+        for (int i = 0; i < 30; i++) {
+            for (int j = 0; j < 30; j++) {
+                number = line.charAt(i*30+j);
+                number -= 48;
+                if (bboard[i][j] == 0) bboard[i][j] = number;
+            }
+        }
+       
+        return bboard;
+    }
+
+
+	
+	/*****************************************************************/
+	/*  Utility methods that are used by other classes in this game. */
+	/*****************************************************************/
 
 	public static Point square_to_coords(int sqX, int sqY, int WIDTH, int HEIGHT, int HS, int VS) { //Converts the square to coordinates on screen
 			return new Point((WIDTH/HS)*sqX, (HEIGHT/VS)*sqY);
@@ -255,5 +318,23 @@ public class MainGame {
 		return false;
 	}
 
+	public static BufferedImage loadImage(String filename) {
+		BufferedImage image = null;
+		
+		InputStream inputStr = MainGame.class.getClassLoader().getResourceAsStream(filename);
+
+		if (inputStr != null) {
+			try {
+				image = ImageIO.read(inputStr);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			JOptionPane.showMessageDialog(null, "An image failed to load: " + filename , "ERROR", JOptionPane.ERROR_MESSAGE);
+		}
+
+		return image;
+	}
+	
 
 }

@@ -76,8 +76,9 @@ class Apple {
 		if(MainGame.wbos(a,b, Window.HS, Window.VS)) {
 			if(bboard[b][a] == EMPTY || bboard[b][a] == SNAKE_HEAD) {
 				if(bboard[b][a] == SNAKE_HEAD) is_eaten = true;
-				bboard[b][a] = EMPTY;
-				this.move_to_sqr(a,b);
+				bboard[sx][sy] = EMPTY;
+				//this.move_to_sqr(a,b);
+				sx=a; sy=b;
 				bboard[this.sy][this.sx] = APPLE;
 			}
 		}

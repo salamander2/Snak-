@@ -31,9 +31,9 @@ class Window {
 	static int REAL_HEIGHT = HEIGHT+30; //the height of the full window, this takes into account the size of the bar with the X that closes the window
 	
 	boolean switch_crlts = false;
-	BufferedImage snake_win =  loadImage("Snake_eat_apple.png");
-	BufferedImage apple_win =  loadImage("Snake_dizzy.png");
-	BufferedImage swap_btn = loadImage("swap_ctrls_button.png");
+	BufferedImage snake_win = MainGame.loadImage("Snake_eat_apple.png");
+	BufferedImage apple_win = MainGame.loadImage("Snake_dizzy.png");
+	BufferedImage swap_btn  = MainGame.loadImage("swap_ctrls_button.png");
 	
 	int time = (int) System.currentTimeMillis();
 	
@@ -273,47 +273,7 @@ class Window {
 	}
 	*/
 	
-	public int[][] randomMaze(int[][] bboard) throws IOException {
 		
-		URL url = this.getClass().getResource("/maps.txt");
-		BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream())); 
-        
-        int fileLength = 0;
-
-        // figure out how many lines (mazes) there are in the file
-        while (true) {
-        	if (br.readLine() != null) fileLength++;
-        	else break;
-        }
-        System.out.println(fileLength);
-        br.close();
-        //debug
-        
-
-        Random random = new Random();
-        int number, randomNumber = random.nextInt(fileLength);
-        BufferedReader maps = new BufferedReader(new InputStreamReader(url.openStream())); 
-        String line = null;
-        // move to the line with the randomly chosen maze
-        System.out.println(randomNumber);
-        for (int i = 0; i < randomNumber+1; i++) {
-        	line = maps.readLine();
-        }
-        
-        // grab the maze on that line
-        
-        for (int i = 0; i < 30; i++) {
-            for (int j = 0; j < 30; j++) {
-                number = line.charAt(i*30+j);
-                number -= 48;
-                if (bboard[i][j] == 0) bboard[i][j] = number;
-            }
-        }
-        maps.close();
-        return bboard;
-    }
-
-	
 	public void setup() { //Creates window container
 		gc.setTitle("Snak ++");
 		gc.setLocationRelativeTo(null);
@@ -330,7 +290,8 @@ class Window {
 		//ran_setup = true;
 	}
 	
-	
+	/* Moved to a static method in MainGame.  It no longer needs a Windows Object 
+
 	public BufferedImage loadImage(String filename) {
 		URL url = this.getClass().getResource("/" + filename);
 		Image image = null;
@@ -350,6 +311,6 @@ class Window {
 		
 		return bim;
 	}
-	
+	*/
 	
 }
